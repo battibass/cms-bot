@@ -1,7 +1,7 @@
 #!/bin/bash -ex
 
 [ "${WORKSPACE}" = "" ] && export WORKSPACE=$(/bin/pwd -P)
-INSTALL_DIR="$1"
+CMSSW_DIR="$1"
 CMSSW_CONFIG_TAG="$2"
 EXTRA_PRS="$3"
 CLANG_TIDY="$4"
@@ -13,25 +13,19 @@ CMSSW_QUEUE="$7"
 [ "${TEST_CHANGES}" != "true" ] && TEST_CHANGES=false
 
 mkdir $WORKSPACE/upload
-if [ "${INSTALL_DIR}" != "" ] ; then
-  CMSSW_PROJECT=$(basename ${INSTALL_DIR})
-  SCRAM_ARCH=$(ls ${INSTALL_DIR}/config/toolbox/)
+if [ "${CMSSW_DIR}" != "" ] ; then
+  CMSSW_PROJECT=$(basename ${CMSSW_DIR})
+  SCRAM_ARCH=$(ls ${CMSSW_DIR}/config/toolbox/)
+  scram -a ${SCRAM_ARCH} project ${CMSSW_DIR}
 else
   eval $(grep 'RELEASE_BRANCH=master;' cms-bot/config.map | grep PROD_ARCH=1 )
   export SCRAM_ARCH
   [ "${CMSSW_QUEUE}" = "" ] || RELEASE_QUEUE="${CMSSW_QUEUE}"
   CMSSW_PROJECT=$(scram -a $SCRAM_ARCH l -c $RELEASE_QUEUE | grep -v 'cmssw-patch' | tr -s ' ' |  cut -d ' '   -f2 | tail -n 1)
+  scram -a ${SCRAM_ARCH} project ${CMSSW_PROJECT}
 fi
-scram -a ${SCRAM_ARCH} project ${CMSSW_PROJECT}
 cd $CMSSW_PROJECT
 
-if [ "${INSTALL_DIR}" != "" ] ; then
-  rm -rf config/toolbox/${SCRAM_ARCH}/tools/selected
-  cp -r ${INSTALL_DIR}/config/toolbox/${SCRAM_ARCH}/tools/selected  config/toolbox/${SCRAM_ARCH}/tools/selected
-  scram setup
-  scram setup self
-  scram build clean >/dev/null 2>&1
-fi
 if [ "${CMSSW_CONFIG_TAG}" != "" ] ; then
   git clone git@github.com:cms-sw/cmssw-config
   pushd cmssw-config ; git checkout ${CMSSW_CONFIG_TAG} ; popd
@@ -49,16 +43,23 @@ pushd src
   for pr in ${EXTRA_PRS} ; do
     git cms-merge-topic -u ${pr}
   done
+  [ "${PATCH_CMD}" != "" ] && eval "${PATCH_CMD}"
 popd
 #Keep original sources to be used by clang-format
 cp -r src src.orig
 if [ "${CMSSW_RELEASE_BASE}" = "" ] ; then
   CMSSW_RELEASE_BASE=$(scram l -c ${CMSSW_VERSION} | sed 's|.* ||') \
-  $CMSSW_BASE/config/SCRAM/find-extensions.sh -t $CMSSW_BASE
+    $CMSSW_BASE/config/SCRAM/find-extensions.sh -t $CMSSW_BASE
 else
-  $CMSSW_BASE/config/SCRAM/find-extensions.sh -t $CMSSW_BASE
+  if [ ! -e ${CMSSW_RELEASE_BASE}/etc/dependencies/uses.out.gz ] ; then
+    CMSSW_RELEASE_BASE=$(scram l -c ${CMSSW_VERSION} | sed 's|.* ||') \
+      $CMSSW_BASE/config/SCRAM/find-extensions.sh -t $CMSSW_BASE
+  else
+    $CMSSW_BASE/config/SCRAM/find-extensions.sh -t $CMSSW_BASE
+  fi
 fi
 cat $CMSSW_BASE/selected-source-files.txt | grep -v '/test/' > $CMSSW_BASE/selected-source-files.txt.filtered || true
+wc -l $CMSSW_BASE/selected-source-files.txt.filtered
 
 ERR=0
 if $CLANG_TIDY ; then
@@ -67,6 +68,7 @@ if $CLANG_TIDY ; then
     git diff --name-only > $WORKSPACE/upload/code-checks.txt
     git diff > $WORKSPACE/upload/code-checks.patch
   popd
+  wc -l $WORKSPACE/upload/code-checks.txt
   echo "Files need clang-tidy fixes ....."
   cat $WORKSPACE/upload/code-checks.txt | cut -d/ -f1,2 | sort | uniq > $WORKSPACE/upload/code-checks-pkgs.log
   scram b clean

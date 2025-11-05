@@ -1,26 +1,52 @@
 #!/bin/sh -ex
 
+function rpmdb_pre_install() {
+  rpmdb_file=$1
+  force=$2
+  if [ -e $WORKDIR/${SCRAM_ARCH}/var/lib/rpm/local-rpmdb.txt ] ; then
+    force=true
+  fi
+  if $force ; then
+    mv $WORKDIR/${SCRAM_ARCH}/var/lib/rpm/${rpmdb_file}  ${WORKSPACE}/${rpmdb_file}
+    ln -s ${WORKSPACE}/${rpmdb_file} $WORKDIR/${SCRAM_ARCH}/var/lib/rpm/${rpmdb_file}
+    touch $WORKDIR/${SCRAM_ARCH}/var/lib/rpm/local-rpmdb.txt
+  fi
+}
+
+function rpmdb_post_install() {
+  rpmdb_file=$1
+  if [ -e $WORKDIR/${SCRAM_ARCH}/var/lib/rpm/local-rpmdb.txt ] ; then
+    rm -f $WORKDIR/${SCRAM_ARCH}/var/lib/rpm/${rpmdb_file}
+    mv ${WORKSPACE}/${rpmdb_file} $WORKDIR/${SCRAM_ARCH}/var/lib/rpm/${rpmdb_file}
+  fi
+}
+
 function install_package() {
+  rpmdb_file="Packages"
+  if [ -e $WORKDIR/${SCRAM_ARCH}/var/lib/rpm/rpmdb.sqlite ] ; then
+    rpmdb_file="rpmdb.sqlite"
+  fi
+  rpmdb_pre_install ${rpmdb_file} false
   rm -f ${WORKSPACE}/inst.log
   ${CMSPKG} install -y $@ 2>&1 | tee -a ${WORKSPACE}/inst.log 2>&1 || true
-  if [ $(grep 'cannot open Packages index using db6' ${WORKSPACE}/inst.log | wc -l) -gt 0 ] ; then
+  if [ $(grep 'cannot open Packages index using db6\|attempt to write a readonly database' ${WORKSPACE}/inst.log | wc -l) -gt 0 ] ; then
     echo "ERROR: RPM DB error found"
     if [ "${USE_LOCAL_RPMDB}" = "true" ] ; then
       echo "  Trying local DB"
-      mv $WORKDIR/${SCRAM_ARCH}/var/lib/rpm/Packages  ${WORKSPACE}/Packages
-      ln -s ${WORKSPACE}/Packages $WORKDIR/${SCRAM_ARCH}/var/lib/rpm/Packages
+      rpmdb_pre_install ${rpmdb_file} true
       rm -f ${WORKSPACE}/inst.log
       ${CMSPKG} install -y $@ 2>&1 | tee -a ${WORKSPACE}/inst.log 2>&1 || true
-      rm -f $WORKDIR/${SCRAM_ARCH}/var/lib/rpm/Packages
-      mv ${WORKSPACE}/Packages $WORKDIR/${SCRAM_ARCH}/var/lib/rpm/Packages
-      echo "Copr RPM DB back"
-      if [ $(grep 'cannot open Packages index using db6' ${WORKSPACE}/inst.log | wc -l) -gt 0 ] ; then
-        echo "Still has RPM DB error"
+      rpmdb_post_install  ${rpmdb_file}
+      echo "  Copy RPM DB back"
+      if [ $(grep 'cannot open Packages index using db6\|attempt to write a readonly database' ${WORKSPACE}/inst.log | wc -l) -gt 0 ] ; then
+        echo "  Still has RPM DB error"
         touch ${WORKSPACE}/err.txt
       fi
     else
       touch ${WORKSPACE}/err.txt
     fi
+  else
+    rpmdb_post_install  ${rpmdb_file}
   fi
 }
 

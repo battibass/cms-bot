@@ -790,7 +790,7 @@ def parse_test_cmd(first_line: str) -> ParseResult:
         raise ParseError("empty input")
 
     seen = set()
-    res = ParseResult(verb=tokens.pop(0))
+    res = ParseResult(verb=tokens.pop(0).lower())
 
     params: List[TestCmdParam] = [
         TestCmdParam(
@@ -887,7 +887,7 @@ def check_test_cmd(first_line, repo, params):
         wfs = ",".join(set(res.workflows))
 
     if res.prs:
-        prs = get_prs_list_from_string(",".join(res.prs))
+        prs = get_prs_list_from_string(",".join(res.prs), repo)
 
     if res.full:
         params["BUILD_FULL_CMSSW"] = "true"
@@ -1120,7 +1120,8 @@ def preprocess_comment_text(comment_msg):
     comment_lines = [re.sub(r"\s?,\s?", ",", x) for x in comment_lines]
     # Remove "@cmsbuild please" prefix
     comment_lines = [
-        re.sub(r"^(@?cmsbuild\s?[,]*\s?)?(please\s?[,]*\s?)?", "", x) for x in comment_lines
+        re.sub(r"^(@?cmsbuild\s?[,]*\s?)?(please\s?[,]*\s?)?", "", x, flags=re.I)
+        for x in comment_lines
     ]
     return comment_lines
 
@@ -1404,7 +1405,7 @@ def process_pr(
             return
 
         last_commit = last_commit_obj.commit
-        commit_statuses = last_commit_obj.get_combined_status().statuses
+        commit_statuses = list(last_commit_obj.get_combined_status().statuses)
         bot_status = get_status(bot_status_name, commit_statuses)
         if not bot_status:
             bot_status_name = "bot/%s/jenkins" % prId
