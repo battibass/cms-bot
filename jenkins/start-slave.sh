@@ -25,7 +25,8 @@ SSH_OPTS="-q -o IdentitiesOnly=yes -o UserKnownHostsFile=/dev/null -o StrictHost
 #Check unique slave conenction
 if [ "${SLAVE_UNIQUE_TARGET}" = "YES" ] ; then
   TARGET_HOST=$(echo $TARGET | sed 's|.*@||')
-  if [ `pgrep -f "@${TARGET_HOST} " | grep -v "$$" | wc -l` -gt 1 ] ; then exit 99 ; fi
+  pgrep -af "@${TARGET_HOST}" || true
+  if [ `pgrep -f "@${TARGET_HOST}" | grep -v "$$" | wc -l` -gt 1 ] ; then exit 99 ; fi
 fi
 DOCKER_IMG_HOST=$(get_env DOCKER_IMG_HOST)
 MULTI_MASTER_SLAVE=$(get_env MULTI_MASTER_SLAVE)
@@ -36,7 +37,7 @@ AGENT_MEMORY=$(get_env JENKINS_AGENT_MEMORY)
 
 JENKINS_SLAVE_JAR_MD5=$(md5sum ${HOME}/slave.jar | sed 's| .*||')
 USER_HOME_MD5=""
-if [ "${REMOTE_USER}" = "cmsbld" ] ; then
+if [ "${REMOTE_USER}" = "cmsbld" -o "$(get_env SYNC_USER_HOME)" = "true" ] ; then
   USER_HOME_MD5=$(tar c ${HOME}/slave_setup/cmsbot 2>&1 | md5sum  | tail -1 | sed 's| .*||')
 fi
 #ssh -n $SSH_EX_OPTS $SSH_OPTS $TARGET aklog || true

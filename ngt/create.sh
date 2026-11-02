@@ -1,0 +1,23 @@
+#!/bin/bash -ex
+function usage(){
+  echo "ERROR: Usage $0 gpu-type session-id"
+  echo "e.g."
+  echo "  $0 mi300x 01"
+  echo "  $0 h100 01"
+  exit 1
+}
+LIFETIME="7d"
+IMG_DATE="20261012"
+GPU="$1"
+ID="$2"
+[ "$GPU" != "" ] || usage
+[ "$ID" != "" ] || usage
+
+if [ ! -f "${GPU}" ] ; then
+  echo "ERROR: No such file ${GPU}"
+  exit 1
+fi
+sed -e "s|@N@|$ID|;s|@IMG_DATE@|$IMG_DATE|;s|@LIFETIME@|$LIFETIME|" ${GPU} > session.yaml
+if [ "$3" = "" ] ; then
+  kubectl --context ngt-token create -f session.yaml
+fi

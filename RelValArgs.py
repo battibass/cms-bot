@@ -32,6 +32,7 @@ RELVAL_KEYS = {
     "TIMEOUT": [],
     "TRACE_FUNCTION": [],
 }
+RNTUPLE_RELVALS_FLAG = "--use-rntuple"
 GPU_RELVALS_FLAGS = "-w gpu --gpu required"
 THREADED_ROOT = "NON_THREADED_CMSSW"
 THREADED_IBS = "NON_THREADED_CMSSW"
@@ -78,9 +79,8 @@ if (
     or ib_test_type.startswith("amd_")
 ):
     RELVAL_KEYS["WORKFLOWS"].append([".+", GPU_RELVALS_FLAGS])
-else:
-    RELVAL_KEYS["WORKFLOWS"].append(["_GPU_", GPU_RELVALS_FLAGS])
-    RELVAL_KEYS["WORKFLOWS"].append(["_ROCM_", GPU_RELVALS_FLAGS])
+elif ib_test_type in ["rntuple"]:
+    RELVAL_KEYS["WORKFLOWS"].append([".+", RNTUPLE_RELVALS_FLAG])
 
 RELVAL_KEYS["enableIMT"].append(
     [THREADED_ROOT, "--customise FWCore/Concurrency/enableIMT.enableIMT"]
@@ -97,9 +97,7 @@ if "CMS_RELVALS_USER_COMMAND_OPTS" in environ:
 RELVAL_ARGS = []
 RELVAL_ARGS.append({})
 # For SLHC releases
-RELVAL_ARGS[len(RELVAL_ARGS) - 1][
-    "_SLHC(DEV|)_"
-] = """
+RELVAL_ARGS[len(RELVAL_ARGS) - 1]["_SLHC(DEV|)_"] = """
   @USE_INPUT@
   @WORKFLOWS@
 """
@@ -107,9 +105,7 @@ RELVAL_ARGS[len(RELVAL_ARGS) - 1]["CMSSW_4_2_"] = ""
 
 RELVAL_ARGS.append({})
 # For rleease cycles >= 7
-RELVAL_ARGS[len(RELVAL_ARGS) - 1][
-    "CMSSW_([1-9][0-9]|[7-9])_"
-] = """
+RELVAL_ARGS[len(RELVAL_ARGS) - 1]["CMSSW_([1-9][0-9]|[7-9])_"] = """
   @USE_INPUT@
   @JOB_REPORT@
   --command "
@@ -125,9 +121,7 @@ RELVAL_ARGS[len(RELVAL_ARGS) - 1][
 
 RELVAL_ARGS.append({})
 # For all other releases
-RELVAL_ARGS[len(RELVAL_ARGS) - 1][
-    ".+"
-] = """
+RELVAL_ARGS[len(RELVAL_ARGS) - 1][".+"] = """
   @USE_INPUT@
 """
 

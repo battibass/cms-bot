@@ -1,0 +1,22 @@
+{
+  "test_name": "test_cmsdist_start_tests",
+  "action_count": 2,
+  "actions": [
+    {
+      "sequence": 1,
+      "action": "create_comment",
+      "details": {
+        "issue_number": 1,
+        "body": "Pull request #1 was updated. @aandvalenzuela, @antoniovilela, @cmsbuild, @iarspider, @rappoccio, @sextonkennedy, @smuzaffar can you please check and sign again.\n<!--pr_updated:654708163404785324-->"
+      }
+    },
+    {
+      "sequence": 2,
+      "action": "edit_comment",
+      "details": {
+        "comment_id": 2838026393,
+        "body": "cms-bot internal usage<!-- bot cache: {\"comments\":{},\"emoji\":{},\"fmt\":2,\"fvx\":[[0,\"2025-12-12T11:00:00Z\",[]]],\"keys\":[\"root.spec::uoMgA4opiuAAkLf+wD9M6bZrERw=\"],\"pf\":{\"base\":\"IB/CMSSW_15_1_X/rootmaster\",\"cur\":[0],\"extra\":[],\"head\":\"97b8e6b89e86de19afb3a428f54f08313457374e\"},\"version\":2} -->"
+      }
+    }
+  ]
+}

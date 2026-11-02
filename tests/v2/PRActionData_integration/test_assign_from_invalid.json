@@ -1,0 +1,24 @@
+{
+  "test_name": "test_assign_from_invalid",
+  "action_count": 2,
+  "actions": [
+    {
+      "sequence": 1,
+      "action": "add_labels",
+      "details": {
+        "issue_number": 27,
+        "labels": [
+          "pending-assignment"
+        ]
+      }
+    },
+    {
+      "sequence": 2,
+      "action": "edit_comment",
+      "details": {
+        "comment_id": 2769190932,
+        "body": "cms-bot internal usage<!-- bot cache: {\"comments\":{},\"emoji\":{\"2769192218\":\"+1\"},\"fmt\":2,\"fvx\":[],\"keys\":[],\"version\":2} -->"
+      }
+    }
+  ]
+}

@@ -70,7 +70,7 @@ def _memorySizeGB():
     return count
 
 
-def gpuList(gpu_type):
+def gpuList(gpu_type, jobs, max_jobs=4):
     """
     Returns the number of supported GPUs for the given type ('cuda' or 'rocm').
 
@@ -94,6 +94,12 @@ def gpuList(gpu_type):
         for i, line in enumerate(o.strip().splitlines())
         if "unsupported" not in line
     ]
+    if supported_lines:
+        jobs = min(jobs, max_jobs)
+        xid = 0
+        while len(supported_lines) < jobs:
+            supported_lines.append(supported_lines[xid])
+            xid += 1
     return supported_lines
 
 
@@ -179,9 +185,13 @@ def epoch2week(epoch_sec, week_offset=4):
 def cmsswIB2Week(release, week_offset=4):
     from datetime import datetime
 
-    rel_date = "-".join(release.split("_")[-1].split("-")[:-1]) + "-1200"
-    rel_sec = int(datetime.strptime(rel_date, "%Y-%m-%d-%H%M").strftime("%s"))
-    return (epoch2week(rel_sec, week_offset), rel_sec)
+    try:
+        rel_date = "-".join(release.split("_")[-1].split("-")[:-1]) + "-1200"
+        rel_sec = int(datetime.strptime(rel_date, "%Y-%m-%d-%H%M").strftime("%s"))
+        return (epoch2week(rel_sec, week_offset), rel_sec)
+    except Exception as e:
+        print("ERROR: Invalid IB: ", release)
+        raise
 
 
 #

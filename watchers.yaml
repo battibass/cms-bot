@@ -571,11 +571,15 @@ fabferro:
 - Geometry/VeryForwardRPTopology
 - RecoCTPPS
 forthommel:
+- CalibPPS
+- DQM/CTPPS
 - EventFilter/CTPPSRawToDigi
 - GeneratorInterface/CepGenInterface
-- RecoHGCal
+- Geometry/VeryForwardData
+- Geometry/VeryForwardGeometry
+- Geometry/VeryForwardGeometryBuilder
 - RecoPPS
-- SimPPS/DirectSimProducer
+- SimPPS
 fwyzard:
 - EventFilter/Configuration
 - EventFilter/OnlineMetaDataRawToDigi
@@ -1065,12 +1069,6 @@ wmtford:
 - SimTracker/TrackerHitAssociation
 - Validation/TrackerRecHits
 - Validation/RecoTrack
-yduhm:
-- RecoLocalTracker/ClusterParameterEstimator
-- RecoLocalTracker/Configuration
-- RecoLocalTracker/Records
-- RecoLocalTracker/SiStrip
-- RecoLocalTracker/SubCollectionProducers
 yenjie:
 - RecoHI
 yetkinyilmaz:
@@ -1199,6 +1197,10 @@ IzaakWN:
 - EventFilter/HGCalRawToDigi
 - Geometry/HGCalMapping
 - RecoLocalCalo/HGCalRecAlgos
+- PhysicsTools/TruthInfo
+- SimDataFormats/TruthInfo
+- SimGeneral/TruthGraphAssociatorProducers
+- Validation/TruthInfo
 vandreev11:
 - SimCalorimetry/HGCalSimProducers
 - DataFormats/HGCDigi
@@ -1302,6 +1304,10 @@ felicepantaleo:
 - SimG4CMS/Calo
 - SimDataFormats/Associations
 - SimDataFormats/CaloAnalysis
+- PhysicsTools/TruthInfo
+- SimDataFormats/TruthInfo
+- SimGeneral/TruthGraphAssociatorProducers
+- Validation/TruthInfo
 mtosi:
 - DQMOffline/Trigger
 - DQM/HLTEvF
@@ -1490,12 +1496,6 @@ afiqaize:
 - EgammaAnalysis
 - DataFormats/EgammaCandidates
 - DataFormats/EgammaReco
-missirol:
-- .*DataFormats
-- .*L1T
-- .*HL
-- .*Trig
-- EventFilter
 sobhatta:
 - RecoEgamma
 - RecoEcal
@@ -1507,7 +1507,12 @@ kpedro88:
 - HeterogeneousCore/SonicCore
 - HeterogeneousCore/SonicTriton
 fabiocos:
+- Alignment/CommonAlignment
+- Alignment/MTDAlignment
+- CondCore/AlignmentPlugins
+- CondCore/MTDPlugins
 - CondFormats/GeometryObjects
+- CondFormats/MTDObjects
 - Configuration
 - DataFormats/DetId
 - DataFormats/ForwardDetId
@@ -1650,18 +1655,8 @@ ram1123:
   - RecoEcal
   - EgammaAnalysis
   - DataFormats/EgammaCandidates
-dinyar:
-  - DataFormats/L1TMuon
-  - DataFormats/L1Scouting
-  - DataFormats/L1ScoutingRawData
-  - DataFormats/L1Trigger
-  - EventFilter/L1ScoutingRawToDigi
-  - EventFilter/L1TRawToDigi
-  - L1Trigger/L1TCommon
-  - L1Trigger/L1TMuon
-  - L1Trigger/L1TNtuples
-tau-pog:
-  - RecoTauTag/
+cms-sw/tau-pog-l2:
+  - RecoTauTag
   - DataFormats/TauReco
   - PhysicsTools/PatAlgos
 francescobrivio:
@@ -1686,21 +1681,6 @@ eyigitba:
 - L1Trigger/CSCCommonTrigger
 - DataFormats/CSCDigi
 - DataFormats/GEMDigi
-youyingli:
-- Validation/Configuration
-- Validation/Geometry
-- Validation/HGCalValidation
-- RecoLocalCalo/Configuration
-- RecoLocalCalo
-- DataFormats/HGCDigi
-- DataFormats/HGCRecHit
-- DataFormats/ForwardDetId
-- RecoHGCal
-- SimTracker/TrackerMaterialAnalysis
-- SimCalorimetry/HGCalSimProducers
-- SimDataFormats
-- Configuration/Skimming
-- DPGAnalysis/Skims
 a-kapoor:
   - RecoEgamma
   - RecoEcal
@@ -1722,6 +1702,11 @@ jlidrych:
 lenzip:
 - PhysicsTools/NanoAODTools
 martinamalberti:
+- Alignment/CommonAlignment
+- Alignment/MTDAlignment
+- CondCore/AlignmentPlugins
+- CondCore/MTDPlugins
+- CondFormats/MTDObjects
 - DataFormats/ForwardDetId
 - DataFormats/FTLDigi
 - DataFormats/FTLRecHit
@@ -1784,3 +1769,35 @@ salimcerci:
 - SimDataFormats
 - Configuration/Skimming
 - DPGAnalysis/Skims
+mmasciov:
+- RecoTracker
+- Validation/RecoTrack
+- HLTrigger/Configuration/python/HLT_75e33
+bfonta:
+- DataFormats/ParticleFlowReco
+- Validation/RecoParticleFlow
+- RecoParticleFlow
+- RecoTICL
+- RecoHGCal
+- RecoEgamma
+- DataFormats/ParticleFlowCandidate
+- DataFormats/ParticleFlowReco
+- CommonTools/ParticleFlow
+- Fireworks/ParticleFlow
+- DQMOffline/ParticleFlow
+24LopezR:
+- Alignment/MTDAlignment
+- CondCore/MTDPlugins
+- CondFormats/MTDObjects
+- DataFormats/ForwardDetId
+- DataFormats/FTLDigi
+- DataFormats/FTLRecHit
+- Geometry/MTDCommonData
+- Geometry/MTDGeometryBuilder
+- Geometry/MTDNumberingBuilder
+- Geometry/MTDSimData
+- Geometry/MTDTBCommonData
+- RecoLocalFastTime
+- RecoMTD
+- SimFastTiming
+- Validation/MtdValidation

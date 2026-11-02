@@ -1,8 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Script to summarise the outputs of compareTriggerResults
 (i.e. the outputs of hltDiff in .json format)
 """
+
 from __future__ import print_function
 import argparse
 import os
@@ -74,6 +75,9 @@ def compareTriggerResultsSummary(**kwargs):
         if verbosity >= 0:
             WARNING(
                 "compareTriggerResultsSummary -- found zero inputs to be compared (no outputs produced)"
+            )
+            print(
+                "SUMMARY TriggerResults: WARNING - found zero valid hltDiff JSON outputs to summarise (no outputs produced)"
             )
         return -1
 

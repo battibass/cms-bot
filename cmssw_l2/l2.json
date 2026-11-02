@@ -19,7 +19,39 @@
       "category": [
         "pdmv"
       ],
+      "end_date": 1789603200,
       "start_date": 1700524800
+    },
+    {
+      "category": [
+        "pdmv"
+      ],
+      "end_date": 1789603200,
+      "start_date": 1772841600
+    },
+    {
+      "category": [
+        "pdmv"
+      ],
+      "end_date": 1789603200,
+      "start_date": 1772841600
+    }
+  ],
+  "Alejandro1400": [
+    {
+      "category": [
+        "alca",
+        "db"
+      ],
+      "start_date": 1763510400
+    }
+  ],
+  "AlexDeMoor": [
+    {
+      "category": [
+        "btv-pog"
+      ],
+      "start_date": 1762300800
     }
   ],
   "AndreaBellora": [
@@ -73,6 +105,53 @@
       "start_date": 1377043200
     }
   ],
+  "Electricks94": [
+    {
+      "category": [
+        "heterogeneous"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1788220800
+    },
+    {
+      "category": [
+        "heterogeneous"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1788220800
+    },
+    {
+      "category": [
+        "heterogeneous"
+      ],
+      "start_date": 1788220800
+    }
+  ],
+  "EltonSh": [
+    {
+      "category": [
+        "alca",
+        "db"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1781049600
+    },
+    {
+      "category": [
+        "alca",
+        "db"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1784505600
+    },
+    {
+      "category": [
+        "alca",
+        "db"
+      ],
+      "start_date": 1781049600
+    }
+  ],
   "ErnestaP": [
     {
       "category": [
@@ -115,6 +194,23 @@
       "start_date": 1753747200
     }
   ],
+  "JHiltbrand": [
+    {
+      "category": [
+        "hcal-dpg"
+      ],
+      "start_date": 1791331200
+    }
+  ],
+  "JanChyczynski": [
+    {
+      "category": [
+        "alca",
+        "db"
+      ],
+      "start_date": 1763510400
+    }
+  ],
   "JanFSchulte": [
     {
       "category": [
@@ -146,7 +242,36 @@
       "category": [
         "upgrade"
       ],
+      "end_date": 1765238400,
       "start_date": 1726704000
+    },
+    {
+      "category": [
+        "reconstruction"
+      ],
+      "start_date": 1765238400
+    }
+  ],
+  "Parsifal-2045": [
+    {
+      "category": [
+        "heterogeneous"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1788220800
+    },
+    {
+      "category": [
+        "heterogeneous"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1788220800
+    },
+    {
+      "category": [
+        "heterogeneous"
+      ],
+      "start_date": 1788220800
     }
   ],
   "Pavlov": [
@@ -178,6 +303,7 @@
       "category": [
         "btv-pog"
       ],
+      "end_date": 1762300800,
       "start_date": 1693353600
     }
   ],
@@ -251,6 +377,14 @@
       "start_date": 1758758400
     }
   ],
+  "acalandr": [
+    {
+      "category": [
+        "btv-pog"
+      ],
+      "start_date": 1762300800
+    }
+  ],
   "adrianodee": [
     {
       "category": [
@@ -278,6 +412,14 @@
       "start_date": 1557187200
     }
   ],
+  "ahinzmann": [
+    {
+      "category": [
+        "pf"
+      ],
+      "start_date": 1772841600
+    }
+  ],
   "ahmad3213": [
     {
       "category": [
@@ -293,6 +435,14 @@
         "externals"
       ],
       "start_date": 1748995200
+    }
+  ],
+  "alaperto": [
+    {
+      "category": [
+        "dqm"
+      ],
+      "start_date": 1791158400
     }
   ],
   "alberto-sanchez": [
@@ -362,6 +512,28 @@
       ],
       "end_date": 1400630400,
       "start_date": 1386892800
+    }
+  ],
+  "antonellopellecchia": [
+    {
+      "category": [
+        "gem-dpg"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1773705600
+    },
+    {
+      "category": [
+        "gem-dpg"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1773705600
+    },
+    {
+      "category": [
+        "gem-dpg"
+      ],
+      "start_date": 1773705600
     }
   ],
   "antoniovagnerini": [
@@ -436,7 +608,24 @@
         "alca",
         "db"
       ],
+      "end_date": 1781049600,
       "start_date": 1726790400
+    },
+    {
+      "category": [
+        "alca",
+        "db"
+      ],
+      "end_date": 1784505600,
+      "start_date": 1772841600
+    },
+    {
+      "category": [
+        "alca",
+        "db"
+      ],
+      "end_date": 1781049600,
+      "start_date": 1772841600
     }
   ],
   "barbaralvarez": [
@@ -496,11 +685,34 @@
       "start_date": 1694649600
     }
   ],
+  "bdanzi": [
+    {
+      "category": [
+        "tracking-pog"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1788480000
+    },
+    {
+      "category": [
+        "tracking-pog"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1789603200
+    },
+    {
+      "category": [
+        "tracking-pog"
+      ],
+      "start_date": 1788480000
+    }
+  ],
   "bellan": [
     {
       "category": [
         "pf"
       ],
+      "end_date": 1772841600,
       "start_date": 1687478400
     }
   ],
@@ -511,6 +723,28 @@
       ],
       "end_date": 1458691200,
       "start_date": 1387584000
+    }
+  ],
+  "benitezj": [
+    {
+      "category": [
+        "lumi-pog"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1775692800
+    },
+    {
+      "category": [
+        "lumi-pog"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1778630400
+    },
+    {
+      "category": [
+        "lumi-pog"
+      ],
+      "start_date": 1775692800
     }
   ],
   "benkrikler": [
@@ -571,6 +805,28 @@
       ],
       "end_date": 1652400000,
       "start_date": 1632873600
+    }
+  ],
+  "camendola": [
+    {
+      "category": [
+        "hgcal-dpg"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1789430400
+    },
+    {
+      "category": [
+        "hgcal-dpg"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1789430400
+    },
+    {
+      "category": [
+        "hgcal-dpg"
+      ],
+      "start_date": 1789430400
     }
   ],
   "cardinia": [
@@ -718,12 +974,49 @@
       "start_date": 1413331200
     }
   ],
+  "cramonal": [
+    {
+      "category": [
+        "hgcal-dpg"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1789430400
+    },
+    {
+      "category": [
+        "hgcal-dpg"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1789430400
+    },
+    {
+      "category": [
+        "hgcal-dpg"
+      ],
+      "start_date": 1789430400
+    }
+  ],
   "cschwick": [
     {
       "category": [
         "lumi-pog"
       ],
+      "end_date": 1775692800,
       "start_date": 1632873600
+    },
+    {
+      "category": [
+        "lumi-pog"
+      ],
+      "end_date": 1778630400,
+      "start_date": 1772841600
+    },
+    {
+      "category": [
+        "lumi-pog"
+      ],
+      "end_date": 1775692800,
+      "start_date": 1772841600
     }
   ],
   "cseez": [
@@ -731,7 +1024,22 @@
       "category": [
         "hgcal-dpg"
       ],
+      "end_date": 1789430400,
       "start_date": 1618272000
+    },
+    {
+      "category": [
+        "hgcal-dpg"
+      ],
+      "end_date": 1789430400,
+      "start_date": 1772841600
+    },
+    {
+      "category": [
+        "hgcal-dpg"
+      ],
+      "end_date": 1789430400,
+      "start_date": 1772841600
     }
   ],
   "ctarricone": [
@@ -937,6 +1245,28 @@
       "start_date": 1377734400
     }
   ],
+  "enibigir": [
+    {
+      "category": [
+        "xpog"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1788998400
+    },
+    {
+      "category": [
+        "xpog"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1789603200
+    },
+    {
+      "category": [
+        "xpog"
+      ],
+      "start_date": 1788998400
+    }
+  ],
   "epalencia": [
     {
       "category": [
@@ -1062,7 +1392,15 @@
       "category": [
         "proton-pog"
       ],
+      "end_date": 1790553600,
       "start_date": 1729036800
+    },
+    {
+      "category": [
+        "reconstruction",
+        "proton-pog"
+      ],
+      "start_date": 1790553600
     }
   ],
   "francescobrivio": [
@@ -1158,7 +1496,22 @@
       "category": [
         "xpog"
       ],
+      "end_date": 1788998400,
       "start_date": 1716508800
+    },
+    {
+      "category": [
+        "xpog"
+      ],
+      "end_date": 1789603200,
+      "start_date": 1772841600
+    },
+    {
+      "category": [
+        "xpog"
+      ],
+      "end_date": 1788998400,
+      "start_date": 1772841600
     }
   ],
   "fwyzard": [
@@ -1234,6 +1587,28 @@
       "start_date": 1462147200
     }
   ],
+  "ghyls": [
+    {
+      "category": [
+        "heterogeneous"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1788220800
+    },
+    {
+      "category": [
+        "heterogeneous"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1788220800
+    },
+    {
+      "category": [
+        "heterogeneous"
+      ],
+      "start_date": 1788220800
+    }
+  ],
   "giamman": [
     {
       "category": [
@@ -1299,6 +1674,14 @@
       ],
       "end_date": 1540512000,
       "start_date": 1519776000
+    }
+  ],
+  "gsokmen": [
+    {
+      "category": [
+        "ml"
+      ],
+      "start_date": 1792972800
     }
   ],
   "gudrutis": [
@@ -1415,6 +1798,7 @@
       "category": [
         "reconstruction"
       ],
+      "end_date": 1791849600,
       "start_date": 1693526400
     }
   ],
@@ -1491,7 +1875,22 @@
       "category": [
         "gem-dpg"
       ],
+      "end_date": 1773705600,
       "start_date": 1632873600
+    },
+    {
+      "category": [
+        "gem-dpg"
+      ],
+      "end_date": 1773705600,
+      "start_date": 1772841600
+    },
+    {
+      "category": [
+        "gem-dpg"
+      ],
+      "end_date": 1773705600,
+      "start_date": 1772841600
     }
   ],
   "juska": [
@@ -1508,7 +1907,22 @@
       "category": [
         "gem-dpg"
       ],
+      "end_date": 1773705600,
       "start_date": 1618358400
+    },
+    {
+      "category": [
+        "gem-dpg"
+      ],
+      "end_date": 1773705600,
+      "start_date": 1772841600
+    },
+    {
+      "category": [
+        "gem-dpg"
+      ],
+      "end_date": 1773705600,
+      "start_date": 1772841600
     }
   ],
   "kandrosov": [
@@ -1525,7 +1939,30 @@
       "category": [
         "pf"
       ],
+      "end_date": 1772841600,
       "start_date": 1632787200
+    }
+  ],
+  "kfjack": [
+    {
+      "category": [
+        "pdmv"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1776643200
+    },
+    {
+      "category": [
+        "pdmv"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1776643200
+    },
+    {
+      "category": [
+        "pdmv"
+      ],
+      "start_date": 1776643200
     }
   ],
   "kirschen": [
@@ -1559,7 +1996,22 @@
       "category": [
         "lumi-pog"
       ],
+      "end_date": 1775692800,
       "start_date": 1632787200
+    },
+    {
+      "category": [
+        "lumi-pog"
+      ],
+      "end_date": 1778630400,
+      "start_date": 1772841600
+    },
+    {
+      "category": [
+        "lumi-pog"
+      ],
+      "end_date": 1775692800,
+      "start_date": 1772841600
     }
   ],
   "kpedro88": [
@@ -1786,7 +2238,15 @@
         "operations",
         "orp"
       ],
+      "end_date": 1790553600,
       "start_date": 1720569600
+    },
+    {
+      "category": [
+        "operations",
+        "orp"
+      ],
+      "start_date": 1790553600
     }
   ],
   "mariadalfonso": [
@@ -1798,12 +2258,28 @@
       "start_date": 1594080000
     }
   ],
+  "martatornago": [
+    {
+      "category": [
+        "ecal-dpg"
+      ],
+      "start_date": 1791158400
+    }
+  ],
   "martinamalberti": [
     {
       "category": [
         "mtd-dpg"
       ],
       "start_date": 1718150400
+    }
+  ],
+  "masonproffitt": [
+    {
+      "category": [
+        "ml"
+      ],
+      "start_date": 1792972800
     }
   ],
   "mbluj": [
@@ -1929,6 +2405,7 @@
       "category": [
         "tracking-pog"
       ],
+      "end_date": 1793059200,
       "start_date": 1720569600
     }
   ],
@@ -1991,6 +2468,7 @@
       "category": [
         "btv-pog"
       ],
+      "end_date": 1762300800,
       "start_date": 1693353600
     }
   ],
@@ -2028,6 +2506,15 @@
       ],
       "end_date": 1649808000,
       "start_date": 1618272000
+    }
+  ],
+  "mtornago": [
+    {
+      "category": [
+        "ecal-dpg"
+      ],
+      "end_date": 1791158400,
+      "start_date": 1791158400
     }
   ],
   "mtosi": [
@@ -2077,7 +2564,44 @@
       "category": [
         "dqm"
       ],
+      "end_date": 1778630400,
       "start_date": 1757462400
+    },
+    {
+      "category": [
+        "dqm"
+      ],
+      "end_date": 1778630400,
+      "start_date": 1772841600
+    },
+    {
+      "category": [
+        "dqm"
+      ],
+      "end_date": 1778630400,
+      "start_date": 1772841600
+    }
+  ],
+  "nowaythatsok": [
+    {
+      "category": [
+        "lumi-pog"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1775692800
+    },
+    {
+      "category": [
+        "lumi-pog"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1778630400
+    },
+    {
+      "category": [
+        "lumi-pog"
+      ],
+      "start_date": 1775692800
     }
   ],
   "nsmith-": [
@@ -2235,6 +2759,28 @@
       "start_date": 1530748800
     }
   ],
+  "pietroGru": [
+    {
+      "category": [
+        "heterogeneous"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1788220800
+    },
+    {
+      "category": [
+        "heterogeneous"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1788220800
+    },
+    {
+      "category": [
+        "heterogeneous"
+      ],
+      "start_date": 1788220800
+    }
+  ],
   "pmandrik": [
     {
       "category": [
@@ -2242,6 +2788,28 @@
       ],
       "end_date": 1695772800,
       "start_date": 1631491200
+    }
+  ],
+  "pmastrap": [
+    {
+      "category": [
+        "tau-pog"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1789430400
+    },
+    {
+      "category": [
+        "tau-pog"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1789430400
+    },
+    {
+      "category": [
+        "tau-pog"
+      ],
+      "start_date": 1789430400
     }
   ],
   "pohsun": [
@@ -2304,6 +2872,14 @@
       "start_date": 1742256000
     }
   ],
+  "raoatifshad": [
+    {
+      "category": [
+        "externals"
+      ],
+      "start_date": 1765152000
+    }
+  ],
   "rappoccio": [
     {
       "category": [
@@ -2345,7 +2921,22 @@
       "category": [
         "hgcal-dpg"
       ],
+      "end_date": 1789430400,
       "start_date": 1618272000
+    },
+    {
+      "category": [
+        "hgcal-dpg"
+      ],
+      "end_date": 1789430400,
+      "start_date": 1772841600
+    },
+    {
+      "category": [
+        "hgcal-dpg"
+      ],
+      "end_date": 1789430400,
+      "start_date": 1772841600
     }
   ],
   "rseidita": [
@@ -2353,7 +2944,14 @@
       "category": [
         "dqm"
       ],
+      "end_date": 1791158400,
       "start_date": 1730246400
+    },
+    {
+      "category": [
+        "ppd"
+      ],
+      "start_date": 1791158400
     }
   ],
   "rvenditti": [
@@ -2382,6 +2980,28 @@
       ],
       "end_date": 1726790400,
       "start_date": 1659052800
+    }
+  ],
+  "sbaldu": [
+    {
+      "category": [
+        "heterogeneous"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1788220800
+    },
+    {
+      "category": [
+        "heterogeneous"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1788220800
+    },
+    {
+      "category": [
+        "heterogeneous"
+      ],
+      "start_date": 1788220800
     }
   ],
   "sbein": [
@@ -2566,6 +3186,26 @@
       ],
       "end_date": 1736208000,
       "start_date": 1662422400
+    },
+    {
+      "category": [
+        "pdmv"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1776643200
+    },
+    {
+      "category": [
+        "pdmv"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1776643200
+    },
+    {
+      "category": [
+        "pdmv"
+      ],
+      "start_date": 1776643200
     }
   ],
   "sscruz": [
@@ -2594,6 +3234,14 @@
       "start_date": 1756684800
     }
   ],
+  "stahlleiton": [
+    {
+      "category": [
+        "pf"
+      ],
+      "start_date": 1772841600
+    }
+  ],
   "subansal": [
     {
       "category": [
@@ -2608,6 +3256,7 @@
       "category": [
         "upgrade"
       ],
+      "end_date": 1765238400,
       "start_date": 1702339200
     }
   ],
@@ -2632,6 +3281,7 @@
       "category": [
         "pf"
       ],
+      "end_date": 1772841600,
       "start_date": 1695081600
     }
   ],
@@ -2651,6 +3301,28 @@
       ],
       "end_date": 1730246400,
       "start_date": 1662595200
+    }
+  ],
+  "teteumac": [
+    {
+      "category": [
+        "pdmv"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1789603200
+    },
+    {
+      "category": [
+        "pdmv"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1789603200
+    },
+    {
+      "category": [
+        "pdmv"
+      ],
+      "start_date": 1789603200
     }
   ],
   "theofil": [
@@ -2673,6 +3345,7 @@
       "category": [
         "ecal-dpg"
       ],
+      "end_date": 1791158400,
       "start_date": 1618358400
     }
   ],
@@ -2899,6 +3572,7 @@
       "category": [
         "hcal-dpg"
       ],
+      "end_date": 1791331200,
       "start_date": 1647216000
     }
   ],
@@ -2909,6 +3583,28 @@
       ],
       "end_date": 1757548800,
       "start_date": 1680048000
+    }
+  ],
+  "waredjeb": [
+    {
+      "category": [
+        "hgcal-dpg"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1789430400
+    },
+    {
+      "category": [
+        "hgcal-dpg"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1789430400
+    },
+    {
+      "category": [
+        "hgcal-dpg"
+      ],
+      "start_date": 1789430400
     }
   ],
   "watson-ij": [
@@ -2934,6 +3630,28 @@
         "ml"
       ],
       "start_date": 1722297600
+    }
+  ],
+  "yeckang": [
+    {
+      "category": [
+        "gem-dpg"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1773705600
+    },
+    {
+      "category": [
+        "gem-dpg"
+      ],
+      "end_date": 1772841600,
+      "start_date": 1773705600
+    },
+    {
+      "category": [
+        "gem-dpg"
+      ],
+      "start_date": 1773705600
     }
   ],
   "yuanchao": [

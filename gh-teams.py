@@ -10,6 +10,7 @@ from github_utils import api_rate_limits, github_api, add_organization_member
 from github_utils import create_team, get_pending_members, get_gh_token
 from github_utils import get_delete_pending_members, get_failed_pending_members
 from categories import CMSSW_ORP, CMSSW_L2, CMS_SDT
+from repo_config import LEGACY_CATEGORIES
 
 setdefaulttimeout(120)
 
@@ -33,7 +34,11 @@ REPO_OWNERS["cms-sw"] += ["sextonkennedy"]
 # Set Teams for organizations    #
 #################################
 # Teams for cms-data
-REPO_TEAMS["cms-data"]["Developers"] = {"members": CMS_SDT[:], "repositories": {"*": "push"}}
+EXTRA_CMS_SDT = ["raoatifshad"]
+REPO_TEAMS["cms-data"]["Developers"] = {
+    "members": CMS_SDT[:] + EXTRA_CMS_SDT,
+    "repositories": {"*": "push"},
+}
 
 # Teams for cms-externals
 REPO_TEAMS["cms-externals"]["Developers"] = deepcopy(REPO_TEAMS["cms-data"]["Developers"])
@@ -99,6 +104,11 @@ for user in CMSSW_L2:
             REPO_TEAMS["cms-sw"][cat] = {"members": []}
         REPO_TEAMS["cms-sw"][cat]["members"].append(user)
 
+for cat in list(LEGACY_CATEGORIES.keys()):
+    cat = "%s-l2" % cat
+    if cat not in REPO_TEAMS["cms-sw"]:
+        REPO_TEAMS["cms-sw"][cat] = {"members": []}
+
 #################################
 parser = ArgumentParser()
 parser.add_argument(
@@ -146,7 +156,7 @@ for org_name in CMS_ORGANIZATIONS:
                     add_organization_member(org_name, login, role="member")
                     chg_flag += 1
                 except Exception as ex:
-                    print("  =>", ex)
+                    print("  =>ERROR:", ex)
                     err_code = 1
         else:
             ok_mems.append(login)
@@ -224,7 +234,7 @@ for org_name in CMS_ORGANIZATIONS:
                             add_organization_member(org_name, login, role="member")
                             chg_flag += 1
                         except Exception as ex:
-                            print("  =>", ex)
+                            print("  =>ERROR:", ex)
                             err_code = 1
                     continue
                 if not login in cache["users"]:
@@ -233,7 +243,7 @@ for org_name in CMS_ORGANIZATIONS:
                     try:
                         team.add_to_members(cache["users"][login])
                     except Exception as e:
-                        print(e)
+                        print("  =>ERROR:", e)
                         err_code = 1
                 print("      =>Added member:", login)
                 chg_flag += 1

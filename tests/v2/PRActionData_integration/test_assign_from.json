@@ -1,0 +1,43 @@
+{
+  "test_name": "test_assign_from",
+  "action_count": 4,
+  "actions": [
+    {
+      "sequence": 1,
+      "action": "add_labels",
+      "details": {
+        "issue_number": 27,
+        "labels": [
+          "core-pending",
+          "pending-signatures"
+        ]
+      }
+    },
+    {
+      "sequence": 2,
+      "action": "remove_labels",
+      "details": {
+        "issue_number": 27,
+        "labels": [
+          "pending-assignment"
+        ]
+      }
+    },
+    {
+      "sequence": 3,
+      "action": "create_comment",
+      "details": {
+        "issue_number": 27,
+        "body": "New categories assigned: core\n\nDr15Jones, iarspider, makortel, smuzaffar you have been requested to review this Pull request/Issue and eventually sign. Thanks\n<!--assign:2769192218-->"
+      }
+    },
+    {
+      "sequence": 4,
+      "action": "edit_comment",
+      "details": {
+        "comment_id": 2769190932,
+        "body": "cms-bot internal usage<!-- bot cache: {\"comments\":{},\"emoji\":{},\"fmt\":2,\"fvx\":[],\"keys\":[],\"version\":2} -->"
+      }
+    }
+  ]
+}

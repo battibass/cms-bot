@@ -25,10 +25,10 @@ LABEL_TYPES = {
 }
 
 # TYPE_COMMANDS[LABEL_NAME]=[LABEL_COLOR,
-#                           REGEXP_TO_MATCH_CCOMMENT",
-#                           TYPE
-#                                type: only apply the last comment
-#                                mtype: accomulate all comments]
+# REGEXP_TO_MATCH_CCOMMENT",
+# TYPE
+# type: only apply the last comment
+# mtype: accomulate all comments]
 TYPE_COMMANDS = {
     "bug-fix": [LABEL_COLORS["bug"], "bug(?:-?fix)?", "type"],
     "new-feature": [LABEL_COLORS["info"], "(?:new-)?(?:feature|idea)", "type"],
@@ -41,6 +41,7 @@ TYPE_COMMANDS = {
         "performance|improvements|performance-improvements",
         "mtype",
     ],
+    "evolution": [LABEL_COLORS["info"], "evo(?:lution)?", "mtype"],
     "ngt": [LABEL_COLORS["performance"], "ngt", "mtype"],
 }
 

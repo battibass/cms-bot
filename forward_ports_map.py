@@ -116,27 +116,29 @@ GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_15_0_X/master"].append("IB/CMSSW_15_0_X/cs
 # Automatically added
 GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_15_1_X/master"] = []
 GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_15_1_X/master"].append("IB/CMSSW_15_1_X/cs9")
-GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_15_1_X/master"].append("IB/CMSSW_15_1_X/g4")
-GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_15_1_X/master"].append("IB/CMSSW_15_1_X/g4adept")
+
+GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_17_0_X/master"] = []
+GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_17_0_X/master"].append("IB/CMSSW_17_0_X/g4")
+
+GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_17_1_X/master"] = []
+GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_17_1_X/master"].append("IB/CMSSW_17_1_X/g4")
 
 # Automatically added
-GIT_REPO_FWPORTS["cmssw"]["CMSSW_16_0_X"] = []
-GIT_REPO_FWPORTS["cmssw"]["CMSSW_16_0_X"].append("CMSSW_16_0_DEVEL_X")
-GIT_REPO_FWPORTS["cmssw"]["CMSSW_16_0_X"].append("CMSSW_16_0_RNTUPLE_X")
-GIT_REPO_FWPORTS["cmssw"]["CMSSW_16_0_X"].append("CMSSW_16_0_FASTPU_X")
-GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_16_0_X/master"] = []
-GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_16_0_X/master"].append("IB/CMSSW_16_0_X/rootmaster")
-GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_16_0_X/master"].append("IB/CMSSW_16_0_X/rntuple")
-GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_16_0_X/master"].append("IB/CMSSW_16_0_X/root636")
-GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_16_0_X/master"].append("IB/CMSSW_16_0_X/fp")
-GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_16_0_X/master"].append("IB/CMSSW_16_0_X/clang")
-GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_16_0_X/master"].append("IB/CMSSW_16_0_X/devel")
-GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_16_0_X/master"].append("IB/CMSSW_16_0_X/g4")
-GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_16_0_X/master"].append("IB/CMSSW_16_0_X/cudart")
-GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_16_0_X/master"].append("IB/CMSSW_16_0_X/tf")
-GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_16_0_X/master"].append("IB/CMSSW_16_0_X/g4adept")
-GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_16_0_X/rootmaster"] = ["IB/CMSSW_16_0_X/rootmodule"]
-GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_16_0_X/rootmaster"].append("IB/CMSSW_16_0_X/g13r6")
-GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_16_0_X/root636"] = ["IB/CMSSW_16_0_X/g14"]
-GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_16_0_X/tf"] = ["IB/CMSSW_16_0_X/py312"]
-GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_16_0_X/g14"] = ["IB/CMSSW_16_0_X/el10"]
+GIT_REPO_FWPORTS["cmssw"]["CMSSW_20_1_X"] = ["CMSSW_20_1_EVTGEN3_X"]
+GIT_REPO_FWPORTS["cmssw"]["CMSSW_20_1_X"].append("CMSSW_20_1_DEVEL_X")
+
+GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_20_1_X/master"] = []
+GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_20_1_X/master"].append("IB/CMSSW_20_1_X/rootmaster")
+GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_20_1_X/master"].append("IB/CMSSW_20_1_X/rocm642")
+GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_20_1_X/master"].append("IB/CMSSW_20_1_X/evtgen3")
+GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_20_1_X/master"].append("IB/CMSSW_20_1_X/py314")
+GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_20_1_X/master"].append("IB/CMSSW_20_1_X/clang")
+GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_20_1_X/master"].append("IB/CMSSW_20_1_X/devel")
+GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_20_1_X/master"].append("IB/CMSSW_20_1_X/g4")
+GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_20_1_X/master"].append("IB/CMSSW_20_1_X/cudart")
+GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_20_1_X/master"].append("IB/CMSSW_20_1_X/g15")
+GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_20_1_X/master"].append("IB/CMSSW_20_1_X/ROCm10")
+GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_20_1_X/rootmaster"] = ["IB/CMSSW_20_1_X/rootmodule"]
+GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_20_1_X/g4"] = ["IB/CMSSW_20_1_X/g4adept"]
+GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_20_1_X/g15"] = ["IB/CMSSW_20_1_X/g15_el10"]
+GIT_REPO_FWPORTS["cmsdist"]["IB/CMSSW_20_1_X/g15"].append("IB/CMSSW_20_1_X/gcc16")

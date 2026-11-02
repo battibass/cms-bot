@@ -8,6 +8,7 @@ from cmsutils import cmsswIB2Week, percentile, epoch2week
 from _py2with3compatibility import Request, urlopen, run_cmd
 from os import stat as tstat
 from time import time
+from datetime import datetime
 
 CMSSDT_ES_QUERY = "https://cmssdt.cern.ch/SDT/cgi-bin/es_query"
 ES_SERVER = "https://os-cmssdt1.cern.ch/os"
@@ -29,6 +30,7 @@ def get_es_query(
     timestamp_field="@timestamp",
     lowercase_expanded_terms="false",
     fields=None,
+    must_fields="",
 ):
     es5_query_tmpl = """
 {
@@ -36,6 +38,7 @@ def get_es_query(
 "query": {
   "bool": {
     "must": [
+      %(must_fields)s
       {"query_string": {"query": "%(query)s"}},
       {"range": {"%(timestamp_field)s": {"gte": %(start_time)s, "lte": %(end_time)s}}}
     ]
@@ -164,7 +167,11 @@ def send_cached_payload():
     for cache_file in glob("%s/*/*.json" % es_cache_dir()):
         print("Processing: ", cache_file)
         with open(cache_file) as ref:
-            data = json.load(ref, parse_float=lambda x: str(x))
+            try:
+                data = json.load(ref, parse_float=lambda x: str(x))
+            except:
+                remove(cache_file)
+                continue
             if not send_request(
                 data["uri"],
                 payload=data["payload"],
@@ -299,6 +306,7 @@ def es_query(
     scroll=False,
     max_count=-1,
     fields=None,
+    must_fields="",
 ):
     query_str = get_es_query(
         query=query,
@@ -308,6 +316,7 @@ def es_query(
         page_size=page_size,
         timestamp_field=timestamp_field,
         fields=fields,
+        must_fields=must_fields,
     )
     if scroll:
         return get_payload_wscroll(index, query_str, max_count)
@@ -443,20 +452,24 @@ def es_send_resource_stats(
 
 
 def es_send_external_stats(
+    build_type,
     stats_dict_file_path,
     opts_dict_file_path,
     cpu_normalize=1,
     es_index_name="externals_stats_summary",
     es_doc_name="externals-stats-summary",
 ):
+    sdata = get_summary_stats_from_json_file(stats_dict_file_path, cpu_normalize)
+    if not sdata:
+        return
     file_stamp = int(tstat(stats_dict_file_path).st_mtime)  # get the file stamp from the file
     week = epoch2week(file_stamp)
     with open(opts_dict_file_path, "r") as opts_dict_f:
         opts_dict = json.load(opts_dict_f)
+    opts_dict["build_type"] = build_type
     index_sha = sha1(
         ("".join([str(x) for x in opts_dict.values()]) + stats_dict_file_path).encode()
     ).hexdigest()
-    sdata = get_summary_stats_from_json_file(stats_dict_file_path, cpu_normalize)
     sdata.update(opts_dict)
     sdata["@timestamp"] = file_stamp * 1000
     try:
@@ -465,18 +478,27 @@ def es_send_external_stats(
         print(str(e))
 
 
-def getExternalsESstats(arch="*", externalsList="", lastNdays=30, page_size=0, fields=None):
+def getExternalsESstats(
+    arch="*",
+    externalsList="",
+    lastNdays=30,
+    page_size=0,
+    fields=None,
+    extra_query="",
+    es_index="externals_stats_summary-*",
+):
     externals_names = ""
     if externalsList == "":
         externals_names = "*"
     else:
         externals_names = (" OR ").join(externalsList.split(","))
     stats = es_query(
-        index="externals_stats_summary-*",
+        index=es_index,
         query=format(
-            "architecture:%(architecture)s AND name.keyword:(%(names)s)",
+            "architecture:%(architecture)s AND name.keyword:(%(names)s) %(extra_query)s",
             architecture=arch,
             names=externals_names,
+            extra_query=extra_query,
         ),
         start_time=1000 * int(time() - (86400 * lastNdays)),
         end_time=1000 * int(time()),
@@ -501,9 +523,98 @@ def orderStatsByName(externalsStats=None):
     return namedStats
 
 
-def get_externals_build_stats(arch="*", lastNdays=30, cpus=0, memoryGB=0, default_key="90"):
-    default_keys = {"cpu": "cpu_" + default_key, "rss": "rss_" + default_key, "time": "time"}
+def set_avg_externals_build_stats(arch="*", lastNdays=60, extra_query=""):
+    fields = []
+    for s in ["cpu", "data", "pss", "shared", "rss", "vms", "uss"]:
+        for k in ["max", "25", "75", "90"]:
+            fields.append("%s_%s" % (s, k))
+    fields = fields + ["time", "num_fds", "num_threads", "processes"]
+    req_fields = fields + ["name", "build_jobs", "architecture", "build_type"]
+    extra_query = "%s AND (_exists_:build_type.keyword)" % extra_query
+    items = getExternalsESstats(
+        arch=arch, lastNdays=lastNdays, fields=req_fields, extra_query=extra_query
+    )
     all_data = {}
+    job_max_cpu = "job_max_cpu"
+    for item in items:
+        ok_item = True
+        for k in fields:
+            if not k in item["_source"]:
+                print("WARNING: Missing key", k, "in", item["_source"])
+                ok_item = False
+                break
+        if not ok_item:
+            continue
+        name = item["_source"]["name"]
+        jobs = item["_source"]["build_jobs"]
+        arch = item["_source"]["architecture"]
+        btype = "build" if not "build_type" in item["_source"] else item["_source"]["build_type"]
+        if not btype in all_data:
+            all_data[btype] = {}
+        if not arch in all_data[btype]:
+            all_data[btype][arch] = {}
+        if not name in all_data[btype][arch]:
+            all_data[btype][arch][name] = {
+                "architecture": arch,
+                "name": name,
+                "build_jobs": 1,
+                "build_type": btype,
+                job_max_cpu: [],
+            }
+            for k in fields:
+                all_data[btype][arch][name][k] = []
+        cpu_max = 99
+        for k in fields:
+            val = int(item["_source"][k])
+            # If value is < 1 then take the avg of last runs
+            if val < 1:
+                if len(all_data[btype][arch][name][k]):
+                    val = sum(all_data[btype][arch][name][k]) / len(all_data[btype][arch][name][k])
+            if k == "cpu_max":
+                cpu_max = val
+                all_data[btype][arch][name][job_max_cpu].append(val)
+            # Assume cpu_max<100 as single threaded job and use the values as it is
+            if cpu_max < 100:
+                if val < 1:
+                    val = 1
+            else:
+                if k == "time":
+                    val = val * jobs
+                else:
+                    val = 1 if (val <= jobs) else (val / jobs)
+            all_data[btype][arch][name][k].append(val)
+    # Take latest first_N entries and then use the max_N highest values
+    first_N = 10
+    max_N = 5
+    midday = (
+        int(datetime.now().replace(hour=0, minute=0, second=0, microsecond=0).timestamp()) * 1000
+    )
+    es_index = "externals_stats_avgs"
+    for btype in all_data:
+        for arch in all_data[btype]:
+            for name in all_data[btype][arch]:
+                total_entries = len(all_data[btype][arch][name]["time"])
+                for k in fields + [job_max_cpu]:
+                    top_values = sorted(all_data[btype][arch][name][k][:first_N], reverse=True)[
+                        :max_N
+                    ]
+                    all_data[btype][arch][name][k] = sum(top_values) / len(top_values)
+                all_data[btype][arch][name]["@timestamp"] = midday
+                all_data[btype][arch][name]["total_entries"] = total_entries
+                sha_str = "%s:%s:%s" % (arch, name, btype)
+                index_sha = sha1(sha_str.encode()).hexdigest()
+                try:
+                    send_payload(
+                        es_index, "_doc", index_sha, json.dumps(all_data[btype][arch][name])
+                    )
+                except Exception as e:
+                    print("ERROR:", e)
+    return
+
+
+def get_avg_externals_build_stats(
+    arch="*", lastNdays=30, cpus=0, memoryGB=0, default_key="90", default_builders=2
+):
     if cpus <= 0:
         from cmsutils import MachineCPUCount
 
@@ -513,25 +624,9 @@ def get_externals_build_stats(arch="*", lastNdays=30, cpus=0, memoryGB=0, defaul
 
         memoryGB = MachineMemoryGB
     mem = memoryGB * 1024 * 1024 * 1024
-
-    fields = list(default_keys.values()) + ["name", "build_jobs"]
-    items = getExternalsESstats(arch=arch, lastNdays=lastNdays, fields=fields)
-    for item in items:
-        name = item["_source"]["name"]
-        jobs = item["_source"]["build_jobs"]
-        if name not in all_data:
-            all_data[name] = {}
-            for k in default_keys:
-                all_data[name][k] = []
-        for k in default_keys:
-            xk = default_keys[k]
-            all_data[name][k].append(int(item["_source"][xk] * cpus / jobs))
-
-    default_res = 4
+    default_res = default_builders
     if cpus < 4:
         default_res = 1
-    elif cpus < 8:
-        default_res = 2
     total_cpus = cpus * 100
     data = {
         "defaults": {
@@ -541,35 +636,34 @@ def get_externals_build_stats(arch="*", lastNdays=30, cpus=0, memoryGB=0, defaul
         },
         "resources": {"cpu": total_cpus, "rss": mem},
         "packages": {},
-        "known": [("^.+-toolfile$", 0), ("^data-.+$", 0), ("^.+$", 1)],
+        "known": [
+            ("^(?!build:).+", 0),
+            ("^build:.+-toolfile$", 0),
+            ("^build:data-.+$", 0),
+        ],
     }
-    for name in all_data:
-        data["packages"][name] = {"cpu": 0, "rss": 0, "time": -1, "name": name}
+    default_keys = {"cpu": "cpu_" + default_key, "rss": "rss_" + default_key, "time": "time"}
+    fields = ["job_max_cpu"] + list(default_keys.values()) + ["name", "architecture", "build_type"]
+    items = getExternalsESstats(
+        arch=arch, lastNdays=lastNdays, fields=fields, es_index="externals_stats_avgs"
+    )
+    for item in items:
+        btype = item["_source"]["build_type"]
+        if not btype in data["packages"]:
+            data["packages"][btype] = {}
+        name = item["_source"]["name"]
+        if name in data["packages"][btype]:
+            continue
+        data["packages"][btype][name] = {"name": name}
+        cpu_max = item["_source"]["job_max_cpu"]
         for k in default_keys:
-            if all_data[name][k]:
-                data["packages"][name][k] = int(sum(all_data[name][k]) / len(all_data[name][k]))
-        # Default resources if no data found for a package
-        if data["packages"][name]["time"] == -1:
-            idx = 1
-            for exp in data["known"]:
-                if re.match(exp[0], name):
-                    idx = exp[1]
-                    break
-            for k in data["defaults"]:
-                data["packages"][name][k] = data["defaults"][k][idx]
-        # for small package with build time 1 or less use min resources
-        elif data["packages"][name]["time"] == 0:
-            for k in data["defaults"]:
-                data["packages"][name][k] = data["defaults"][k][0]
-        else:
-            # Make sure resources are not more than the total
-            for k in data["defaults"]:
-                if k == "time":
-                    continue
-                v = data["packages"][name][k]
-                if v > data["resources"][k]:
-                    v = data["resources"][k]
-                elif v == 0:
-                    v = data["defaults"][k][0]
-                data["packages"][name][k] = v
+            val = item["_source"][default_keys[k]]
+            if cpu_max >= 100:
+                val = (val / cpus) if (k == "time") else (val * cpus)
+            if k in data["resources"]:
+                if val > data["resources"][k]:
+                    val = data["resources"][k]
+                elif val < data["defaults"][k][0]:
+                    val = data["defaults"][k][0]
+            data["packages"][btype][name][k] = val
     return data

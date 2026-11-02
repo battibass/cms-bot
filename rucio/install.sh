@@ -50,6 +50,7 @@ if [ "${RUCIO_VERSION}" = "" ] ; then
   exit 1
 fi
 
+export RUCIO_VERSION
 PY_VER=$(${PYTHON_CMD} -c 'import sys;print(sys.version_info[0])')
 export PYTHONUSERBASE="${INSTALL_DIR}/${ARCH}/py${PY_VER}/${RUCIO_VERSION}"
 if $REINSTALL ; then rm -rf ${PYTHONUSERBASE} ; fi
@@ -80,6 +81,7 @@ fi
 THIS_DIR=$(dirname $0)
 rsync -a ${THIS_DIR}/deploy/ ${INSTALL_DIR}/
 rm -f ${PYTHONUSERBASE}/etc/rucio.cfg
+mkdir -p ${PYTHONUSERBASE}/etc
 ln -s ../../../../../rucio.cfg ${PYTHONUSERBASE}/etc/rucio.cfg
 
 cp -r ${THIS_DIR}/setup.sh ${INSTALL_DIR}/setup-py${PY_VER}.sh

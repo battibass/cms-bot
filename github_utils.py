@@ -108,19 +108,8 @@ def check_rate_limits(msg=True, when_slow=False, prefix=""):
     )
 
 
-def api_rate_limits_repo(obj, msg=True, when_slow=False, prefix=""):
-    global GH_RATE_LIMIT
-    GH_RATE_LIMIT = [
-        int(obj.raw_headers["x-ratelimit-remaining"]),
-        int(obj.raw_headers["x-ratelimit-limit"]),
-        int(obj.raw_headers["x-ratelimit-reset"]),
-    ]
-    check_rate_limits(msg, when_slow, prefix=prefix)
-
-
 def api_rate_limits(gh, msg=True, when_slow=False, prefix=""):
     global GH_RATE_LIMIT
-    gh.get_rate_limit()
     GH_RATE_LIMIT = [
         int(gh.rate_limiting[0]),
         int(gh.rate_limiting[1]),
@@ -293,6 +282,20 @@ def cache_invalid_pr(pr_id, cache):
     cache["dirty"] = True
 
 
+def get_pr_data(repo_name, pr_number, cmsprs):
+    pr_md5 = md5((pr_number + "\n").encode()).hexdigest()
+    pr_cache = join(cmsprs, repo_name, pr_md5[0:2], pr_md5[2:] + ".json")
+    print("Checking cached file: " + pr_cache)
+    if exists(pr_cache):
+        with open(pr_cache) as ref:
+            json_obj = json.load(ref)
+            if "labels" in json_obj:
+                json_obj["labels"] = sorted(json_obj["labels"])
+            return json_obj
+    print("  Pull request cache %s for %s#%s not found." % (pr_cache, repo_name, pr_number))
+    return {}
+
+
 def fill_notes_description(notes, repo_name, cmsprs, cache={}):
     new_notes = {}
     for log_line in notes.splitlines():
@@ -310,14 +313,10 @@ def fill_notes_description(notes, repo_name, cmsprs, cache={}):
             continue
         print("Checking ", pr_number, author, parent_hash)
         try:
-            pr_md5 = md5((pr_number + "\n").encode()).hexdigest()
-            pr_cache = join(cmsprs, repo_name, pr_md5[0:2], pr_md5[2:] + ".json")
-            print("Checking cached file: " + pr_cache)
-            if not exists(pr_cache):
-                print("  Cache does not exists: ", pr_cache)
+            pr = get_pr_data(repo_name, pr_number, cmsprs)
+            if not pr:
                 cache_invalid_pr(pr_hash_id, cache)
                 continue
-            pr = json.load(open(pr_cache))
             if not "auther_sha" in pr:
                 print("  Invalid/Indirect PR", pr)
                 cache_invalid_pr(pr_hash_id, cache)
@@ -731,7 +730,9 @@ def get_gh_user():
 
 def get_combined_statuses(commit, repository):
     get_gh_token(repository)
-    return github_api("/repos/%s/commits/%s/status" % (repository, commit), method="GET")
+    return github_api(
+        "/repos/%s/commits/%s/status" % (repository, commit), method="GET", merge_dict=True
+    )
 
 
 def get_pr_commits(pr, repository, per_page=None, last_page=False):
@@ -1012,9 +1013,12 @@ def enable_github_loggin():
             # Walk the call stack to find the first frame outside of PyGithub
             for frame_info in inspect.stack():
                 filename = frame_info.filename
-                if "site-packages/github/" not in filename.replace(
-                    "\\", "/"
-                ) and "PyGithub/github/" not in filename.replace("\\", "/"):
+                if (
+                    "site-packages/github/" not in filename.replace("\\", "/")
+                    and "PyGithub/github/" not in filename.replace("\\", "/")
+                    and "github_utils" not in filename
+                    and "__init__" not in filename
+                ):
                     record.filename = os.path.basename(filename)
                     record.lineno = frame_info.lineno
                     break

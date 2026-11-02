@@ -34,6 +34,7 @@ function get_cached_GH_JSON (){
 }
 
 function git_clone_and_merge (){
+    local ERR=0
     PR_METADATA_PATH=$1  # Absolute path to JSON format text with PR data from github
     # ---
     BASE_REPO_NAME=$(${CMSBOT_PYTHON_CMD} -c "import json,sys,codecs;obj=json.load(codecs.open('${PR_METADATA_PATH}',encoding='utf-8',errors='ignore'));print(obj['base']['repo']['name'])")
@@ -45,15 +46,18 @@ function git_clone_and_merge (){
 
     pushd ${WORKSPACE} >/dev/null 2>&1
         if [ $(echo $BASE_REPO | grep '/cmsdist$' | wc -l) -gt 0 ] ; then
-          [ ! -z "${CMSDIST_TAG}" ] && BASE_BRANCH="${CMSDIST_TAG}"
+            [ ! -z "${CMSDIST_TAG}" ] && BASE_BRANCH="${CMSDIST_TAG}"
         fi
         if  [ ! -d ${BASE_REPO_NAME} ]; then
             git clone https://github.com/${BASE_REPO} -b ${BASE_BRANCH} || git clone git@github.com:${BASE_REPO} -b ${BASE_BRANCH}
         fi
         pushd ${BASE_REPO_NAME}  >/dev/null 2>&1
-            git pull --no-rebase https://github.com/${TEST_REPO}.git ${TEST_BRANCH}
+            git config user.name "Cms Build"
+            git config user.email "cmsbuild@cern.ch"
+            git pull --no-rebase https://github.com/${TEST_REPO}.git ${TEST_BRANCH} || ERR=1
         popd
     popd
+    return $ERR
 }
 
 function get_base_branch(){
@@ -104,8 +108,8 @@ function prepare_upload_results (){
           mkdir -p ${LOCAL_LOGDIR}/${xdir}
           mv ${dir}/log ${LOCAL_LOGDIR}/${xdir}/
           [ -e ${dir}/src-logs.tgz ] && mv ${dir}/src-logs.tgz ${LOCAL_LOGDIR}/${xdir}/
-          json=$(basename $(dirname $dir)).json
-          [ -e "${dir}/${json}" ] && mv ${dir}/${json} ${LOCAL_LOGDIR}/${xdir}/
+          pkg=$(basename $(dirname $dir))
+          [ -e "${dir}/${pkg}.json" ] && mv ${dir}/${pkg}*.json ${LOCAL_LOGDIR}/${xdir}/
           [ -e "${dir}/opts.json" ] && mv ${dir}/opts.json ${LOCAL_LOGDIR}/${xdir}/
         done
       popd
@@ -166,7 +170,7 @@ function get_result_file_name () {
   SUFFIX=$1
 
   UC_TEST_FLAVOR=$(echo "${TEST_FLAVOR}" | tr 'a-z' 'A-Z')
-  [ "${UC_TEST_FLAVOR}" != "" ] && UC_TEST_FLAVOR="-{UC_TEST_FLAVOR}"
+  [ "${UC_TEST_FLAVOR}" != "" ] && UC_TEST_FLAVOR="-${UC_TEST_FLAVOR}"
 
   case $TEST_TYPE in
     relval)
@@ -187,6 +191,14 @@ function get_result_file_name () {
       ;;
     compnano)
       echo "21-${TEST_FLAVOR}-comparison-report.res"
+      return 0
+      ;;
+    maxmem)
+      if [ "$TEST_FLAVOR" != "" ]; then
+        echo "23-${TEST_FLAVOR}-maxmem-report.res"
+      else
+        echo "23-maxmem-report.res"
+      fi
       return 0
       ;;
   esac

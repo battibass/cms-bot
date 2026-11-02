@@ -13,7 +13,7 @@ GITHUB_BLACKLIST_AUTHORS = []
 CMSSW_ORP = ["sextonkennedy", "mandrenguyen", "ftenchini"]
 # CMS-SDT members who has admin rights to various github organizations and repositories.
 # They are also reposionsible to sign for externals
-CMS_SDT = ["iarspider", "smuzaffar", "akritkbehera"]
+CMS_SDT = ["iarspider", "smuzaffar", "akritkbehera", "raoatifshad"]
 # List of gh users who can approve a release build request
 APPROVE_BUILD_RELEASE = list(set(["smuzaffar"] + CMSSW_ORP + SPECIAL_RELEASE_MANAGERS))
 # List of gh users who can request to build a release.
@@ -40,6 +40,7 @@ TRIGGER_PR_TESTS = list(
             "silviodonato",
             "slava77",
             "srimanob",
+            "AdrianoDee",
         ]
         + REQUEST_BUILD_RELEASE
         + [a for a in authors if authors[a] > 10 and not a in GITHUB_BLACKLIST_AUTHORS]
@@ -62,20 +63,27 @@ CMSSW_L2 = {
     "Dr15Jones": ["core", "visualization", "geometry"],
     "Martin-Grunewald": ["hlt"],
     "mmusich": ["hlt"],
-    "AdrianoDee": ["pdmv"],
+    "teteumac": ["pdmv"],
     "antoniovagnerini": ["pdmv"],
     "DickyChant": ["pdmv"],
     "miquork": ["pdmv", "jetmet-pog"],
+    "kfjack": ["pdmv"],
+    "sroychow": ["pdmv"],
     "alja": ["visualization"],
     "civanch": ["simulation", "geometry", "fastsim"],
     "bsunanda": ["geometry"],
     "davidlange6": ["operations"],
     "emeschi": ["daq"],
-    "ftorrresd": ["xpog"],
-    "fwyzard": ["heterogeneous"],
-    "jfernan2": ["reconstruction"],
+    "enibigir": ["xpog"],
+    "Electricks94": ["heterogeneous"],  # Markus Holzer
+    "Parsifal-2045": ["heterogeneous"],  # Luca Ferragina
+    "fwyzard": ["heterogeneous"],  # Andrea Bocci
+    "ghyls": ["heterogeneous"],  # Mario Gonzalez
+    "pietroGru": ["heterogeneous"],  # Pietro Grutta
+    "sbaldu": ["heterogeneous"],  # Simone Balducci
+    "forthommel": ["reconstruction", "proton-pog"],
     "makortel": ["heterogeneous", "core", "visualization", "geometry"],
-    "mandrenguyen": ["reconstruction", "operations"],
+    "mandrenguyen": ["operations"],
     "mdhildreth": ["simulation", "geometry", "fastsim"],
     "mkirsano": ["generators"],
     "sensrcn": ["generators"],
@@ -84,27 +92,28 @@ CMSSW_L2 = {
     "ftenchini": ["operations"],
     "BenjaminRS": ["l1"],
     "quinnanm": ["l1"],
-    "rseidita": ["dqm"],
+    "alaperto": ["dqm"],
     "ctarricone": ["dqm"],
     "smorovic": ["daq"],
     "smuzaffar": ["core"],
     "srimanob": ["reconstruction"],
-    "subirsarkar": ["upgrade"],
-    "Moanwar": ["upgrade"],
+    "Moanwar": ["reconstruction"],
     "ssekmen": ["fastsim"],
     "francescobrivio": ["db"],
     "tvami": ["analysis"],
-    "atpathak": ["alca", "db"],
+    "EltonSh": ["alca", "db"],
     "perrotta": ["alca", "db"],
     "arunhep": ["alca", "db"],
+    "JanChyczynski": ["alca", "db"],
+    "Alejandro1400": ["alca", "db"],
     "kpedro88": ["simulation", "geometry", "fastsim"],
     CMSBUILD_USER: ["tests"],
     # dpgs
     "mdelcourt": ["trk-dpg"],
     "henriettepetersen": ["trk-dpg"],
     "bmarzocc": ["ecal-dpg"],
-    "thomreis": ["ecal-dpg"],
-    "wang-hui": ["hcal-dpg"],
+    "martatornago": ["ecal-dpg"],
+    "JHiltbrand": ["hcal-dpg"],
     "jhakala": ["hcal-dpg"],
     "abdoulline": ["hcal-dpg"],
     "igv4321": ["hcal-dpg"],
@@ -118,49 +127,51 @@ CMSSW_L2 = {
     "jhgoh": ["rpc-dpg"],
     "andresib": ["rpc-dpg"],
     "Pavlov": ["rpc-dpg"],
-    "kamon": ["gem-dpg"],
-    "jshlee": ["gem-dpg"],
     "watson-ij": ["gem-dpg"],
+    "yeckang": ["gem-dpg"],
+    "antonellopellecchia": ["gem-dpg"],
     "fabferro": ["ctpps-dpg"],
     "jan-kaspar": ["ctpps-dpg"],
     "vavati": ["ctpps-dpg"],
-    "rovere": ["hgcal-dpg"],
-    "cseez": ["hgcal-dpg"],
     "pfs": ["hgcal-dpg"],
     "felicepantaleo": ["hgcal-dpg"],
+    "camendola": ["hgcal-dpg"],  # L3
+    "cramonal": ["hgcal-dpg"],  # L3
+    "waredjeb": ["hgcal-dpg"],  # L3
     "fabiocos": ["mtd-dpg", "operations"],
     "martinamalberti": ["mtd-dpg"],
     "parbol": ["mtd-dpg"],
     # pogs
-    "bellan": ["pf"],
-    "kdlong": ["pf"],
-    "swagata87": ["pf"],
+    "stahlleiton": ["pf"],
+    "ahinzmann": ["pf"],
     "Raffaella07": ["egamma-pog"],
     "RSalvatico": ["egamma-pog"],
     "kirschen": ["jetmet-pog"],
     "alkaloge": ["jetmet-pog"],
-    "knollejo": ["lumi-pog"],
-    "cschwick": ["lumi-pog"],
+    "benitezj": ["lumi-pog"],
+    "nowaythatsok": ["lumi-pog"],
     "bonanomi": ["muon-pog"],
     "CeliaFernandez": ["muon-pog"],
-    "SWuchterl": ["btv-pog"],
-    "mondalspandan": ["btv-pog"],
+    "AlexDeMoor": ["btv-pog"],
+    "acalandr": ["btv-pog"],
     "AndreaBellora": ["proton-pog"],
-    "forthommel": ["proton-pog"],
     "cardinia": ["tau-pog"],
     "IzaakWN": ["tau-pog"],
     "mbluj": ["tau-pog"],
-    "mmasciov": ["tracking-pog"],
+    "pmastrap": ["tau-pog"],
     "elusian": ["tracking-pog"],
+    "bdanzi": ["tracking-pog"],
     # PPD
     "abenecke": ["ppd"],
+    "rseidita": ["ppd"],
     "vlimant": ["ppd"],
-    "nothingface0": ["dqm"],
     "gabrielmscampos": ["dqm"],
     # ML
     "valsdav": ["ml", "egamma-pog"],
     "y19y19": ["ml"],
     "hjkwon260": ["ml"],
+    "masonproffitt": ["ml"],
+    "gsokmen": ["ml"],
 }
 
 # Automatically sign these categories if tests are passed

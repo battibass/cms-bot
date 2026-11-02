@@ -81,7 +81,14 @@ rm -f $WORKSPACE/ALL_DONE
 if [ "X$COMPARISON_RELEASE" = "X" ] ; then COMPARISON_RELEASE=$CMSSW_VERSION; fi
 if [ "$REAL_ARCH" = "" ] ; then REAL_ARCH="${RELVAL_REAL_ARCH}"; fi
 PR_NUM=$(echo ${PULL_REQUEST} | md5sum | sed 's| .*||' | cut -c27-33)
-BASELINE_DIR=ib-baseline-tests/$COMPARISON_RELEASE/$COMPARISON_ARCH/$REAL_ARCH/matrix${TEST_FLAVOR}-results
+if [ "${BASELINE_TEST_FLAVOR}" == "" ] ; then
+  BASELINE_TEST_FLAVOR="${TEST_FLAVOR}"
+  case "${TEST_FLAVOR}" in
+    rntuple ) BASELINE_TEST_FLAVOR="";;
+    * ) ;;
+  esac
+fi
+BASELINE_DIR=ib-baseline-tests/$COMPARISON_RELEASE/$COMPARISON_ARCH/$REAL_ARCH/matrix${BASELINE_TEST_FLAVOR}-results
 PR_BASELINE_JOBDIR=pull-request-integration/${UPLOAD_UNIQ_ID}
 PR_BASELINE_DIR=${PR_BASELINE_JOBDIR}/runTheMatrix${UC_TEST_FLAVOR}-results
 JENKINS_ARTIFACTS_URL="https://cmssdt.cern.ch/SDT/jenkins-artifacts"
@@ -91,6 +98,7 @@ COMP_UPLOAD_DIR="baseLineComparisons${UC_TEST_FLAVOR}/${COMPARISON_RELEASE}+${PR
 DAS_NON_CONSISTENT_WFS_FILE=wf_non_consistent_das.txt
 MAPPING_FILE=wf_mapping.txt
 ERRORS_FILE=wf_errors.txt
+[ $(echo ${RELEASE_FORMAT} | grep 'EVOLUTION_X'   | wc -l) -gt 0 ] && RUN_JR_COMP=false
 
 #Make sure Release baseline has been deployed
 echo -n "Waiting for baseline .."
@@ -155,11 +163,19 @@ echo "Done Downloading `date`"
 ${NANO_TEST} && process_nano nano $WORKSPACE/data/PR-${PR_NUM}
 
 set +x
-for r in $(find $WORKSPACE/data/PR-${PR_NUM} -name 'step*.root' -type f | grep -v 'inDQM.root') ; do
+for r in $(find $WORKSPACE/data/PR-${PR_NUM} -name 'step*.root' -o -name 'step*.rntpl' -type f | grep -v 'inDQM.root') ; do
   while [ $(jobs -p | wc -l) -ge ${NUM_PROC} ] ; do sleep 0.1 ; done
   echo "Running edmEventSize and edmProvDump: $r"
-  (edmEventSize -v $r > $r.edmEventSize || true) &
-  (edmProvDump     $r > $r.edmProvDump  || true) &
+  case $r in
+    *.rntpl )
+      (edmRNTupleTempStorage --average $r > $r.edmEventSize || true) &
+      (edmRNTupleTempProvDump          $r > $r.edmProvDump  || true) &
+      ;;
+    *.root )
+      (edmEventSize -v $r > $r.edmEventSize || true) &
+      (edmProvDump     $r > $r.edmProvDump  || true) &
+      ;;
+  esac
 done
 set -x
 jobs
@@ -281,12 +297,22 @@ fi
 
 echo "DQM_PID: ${DQM_PID}"
 #Run product size comparison script for Phase2 workflow
-mkdir compareProducts && pushd compareProducts
+mkdir compareProducts
+pushd compareProducts
   cp $CMS_BOT_DIR/comparisons/compareProducts.* ./
-  ./compareProducts.sh $WORKSPACE/data/PR-$PR_NUM/136.874_*/step3.root $WORKSPACE/data/$COMPARISON_RELEASE/136.874_*/step3.root _ 100 10 > products_AOD.log || true
-  ./compareProducts.sh $WORKSPACE/data/PR-$PR_NUM/136.874_*/step3_inMINIAOD.root $WORKSPACE/data/$COMPARISON_RELEASE/136.874_*/step3_inMINIAOD.root _ 100 10 > products_MINIAOD.log || true
-  mv products_AOD.log $WORKSPACE/upload/products_AOD.log
-  mv products_MINIAOD.log $WORKSPACE/upload/products_MINIAOD.log
+  for wf in 136.874 ; do
+    for step in step3 ; do
+      for stype in "" "_inMINIAOD" ; do
+        fA=$(ls -d $WORKSPACE/data/PR-$PR_NUM/${wf}_*/${step}${stype}.root 2>/dev/null || true)
+        [ "${fA}" != "" ] || continue
+        fB=$(ls -d $WORKSPACE/data/$COMPARISON_RELEASE/${wf}_*/${step}${stype}.root 2>/dev/null || true)
+        [ "${fB}" != "" ] || continue
+        aod_log="${stype}"
+        [ "${stype}" == "" ] && aod_log="_AOD"
+        ./compareProducts.sh "$fA" "$fB" _ 100 10 > ${WORKSPACE}/upload/products${aod_log}.log || true
+      done
+    done
+  done
 popd
 
 set +x
@@ -294,9 +320,9 @@ set +x
 # maxmem-profile comparison
 # --------------------------------------------------------------------------
 echo "Started maxmem-profile comparison at `date`"
-OUTPUT_DIR=$WORKSPACE/results/maxmem-comparison
+MAXMEM_COMPARISON_OUTPUT_DIR=$WORKSPACE/results/maxmem-comparison
 #create the output dir
-mkdir -p $OUTPUT_DIR
+mkdir -p $MAXMEM_COMPARISON_OUTPUT_DIR
 for maxmem in $(find $WORKSPACE/data/PR-${PR_NUM} -follow -name 'maxmem_profile_*.txt' -type f | sed "s|$WORKSPACE/data/PR-${PR_NUM}/||") ; do
   echo "Maxmem Profile> Working on ${maxmem}"
   if [ ! -e "$WORKSPACE/data/$COMPARISON_RELEASE/${maxmem}" ] ; then
@@ -305,13 +331,19 @@ for maxmem in $(find $WORKSPACE/data/PR-${PR_NUM} -follow -name 'maxmem_profile_
   fi
   WF_NUMBER=$(echo ${maxmem} | sed 's|_.*||')
   $CMS_BOT_DIR/comparisons/compare-maxmem.py $WORKSPACE/data/PR-${PR_NUM}/${maxmem} \
-    $WORKSPACE/data/$COMPARISON_RELEASE/${maxmem} > $OUTPUT_DIR/${WF_NUMBER}.json 2> $OUTPUT_DIR/${WF_NUMBER}.err || true
+    $WORKSPACE/data/$COMPARISON_RELEASE/${maxmem} > $MAXMEM_COMPARISON_OUTPUT_DIR/${WF_NUMBER}.json 2>> $MAXMEM_COMPARISON_OUTPUT_DIR/${WF_NUMBER}.err || true
 done
-$CMS_BOT_DIR/comparisons/compare-maxmem-summary.py -i $OUTPUT_DIR -f '*.json' -F html -o $OUTPUT_DIR/index.html -u $JENKINS_ARTIFACTS_URL/$PR_BASELINE_DIR || true
-if grep "exceeds threshold" $OUTPUT_DIR/*.err 2>/dev/null; then
-  echo "MAXMEM_COMPARISON${TEST_FLAVOR_STR};OK,max memory used ${UC_TEST_FLAVOR} comparison,See results,/SDT/jenkins-artifacts/$COMP_UPLOAD_DIR/maxmem-comparison" >> ${RESULTS_FILE}
+mkdir -p $WORKSPACE/testsResults
+$CMS_BOT_DIR/comparisons/compare-maxmem-summary.py -i $MAXMEM_COMPARISON_OUTPUT_DIR -f '*.json' -F html -o $MAXMEM_COMPARISON_OUTPUT_DIR/maxmem_summary.html -u $JENKINS_ARTIFACTS_URL/$PR_BASELINE_DIR >$MAXMEM_COMPARISON_OUTPUT_DIR/maxmem_summary.log 2>&1 || true
+if grep "Error:" $MAXMEM_COMPARISON_OUTPUT_DIR/*.err >$MAXMEM_COMPARISON_OUTPUT_DIR/maxmem_summary.log 2>/dev/null; then
+  echo "MAXMEM_COMPARISON${TEST_FLAVOR_STR};OK,max memory used comparison failed ${UC_TEST_FLAVOR} ,See failed results,/SDT/jenkins-artifacts/$COMP_UPLOAD_DIR/maxmem-comparison/maxmem_summary.html" >> ${RESULTS_FILE}
+  REPORT_FILE=$WORKSPACE/testsResults/$(get_result_file_name "maxmem" "${TEST_FLAVOR}" "")
+  touch $REPORT_FILE
+  ${CMS_BOT_DIR}/report-pull-request-results PARSE_MAXMEM_FAIL --no-post --unit-tests-file $MAXMEM_COMPARISON_OUTPUT_DIR/maxmem_summary.log --report-file ${REPORT_FILE} --report-url ${PR_RESULT_URL} || true
+  ${CMS_BOT_DIR}/report-pull-request-results PARSE_MAXMEM_FAIL --unit-tests-file $MAXMEM_COMPARISON_OUTPUT_DIR/maxmem_summary.log --report-file ${REPORT_FILE} --report-url ${PR_RESULT_URL} || true
+  sed -i "s|Max Memory Comparisons exceeding threshold|Max Memory Comparisons exceeding threshold ${UC_TEST_FLAVOR}|g" ${REPORT_FILE}
 else
-  echo "MAXMEM_COMPARISON${TEST_FLAVOR_STR};OK,max memory used ${UC_TEST_FLAVOR} comparison,See results,/SDT/jenkins-artifacts/$COMP_UPLOAD_DIR/maxmem-comparison" >> ${RESULTS_FILE}
+  echo "MAXMEM_COMPARISON${TEST_FLAVOR_STR};OK,max memory used comparison ${UC_TEST_FLAVOR},See results,/SDT/jenkins-artifacts/$COMP_UPLOAD_DIR/maxmem-comparison/maxmem_summary.html" >> ${RESULTS_FILE}
 fi
 
 # --------------------------------------------------------------------------
@@ -346,7 +378,7 @@ if [ "X$RUN_TR_COMP" = Xtrue ]; then
     wait_dqm_comp 0.5
     WF_DIR=`echo ${WF} | cut -d "/" -f1`
     echo "Running: edm::TriggerResults ${WF_DIR}"
-    (${CMS_BOT_DIR}/compareTriggerResults.py -r ${WORKSPACE}/data/${COMPARISON_RELEASE} -t ${WORKSPACE}/data/PR-${PR_NUM} \
+    (${CMSBOT_PYTHON_CMD} ${CMS_BOT_DIR}/compareTriggerResults.py -r ${WORKSPACE}/data/${COMPARISON_RELEASE} -t ${WORKSPACE}/data/PR-${PR_NUM} \
       -f "*/${WF_DIR}/step*.root" -o ${WORKSPACE}/upload/triggerResults > ${WORKSPACE}/upload/triggerResults/${WF_DIR}.log 2>&1 || true) &
   done
 fi
@@ -530,7 +562,7 @@ wait || true
 
 if [ "X$RUN_TR_COMP" = Xtrue ]; then
   echo "[`date`] Done comparisons of edm::TriggerResults"
-  ${CMS_BOT_DIR}/compareTriggerResultsSummary.py -i ${WORKSPACE}/upload/triggerResults -f "*/*.json" -o ${WORKSPACE}/upload/triggerResults/index.html -F html > ${WORKSPACE}/upload/triggerResults.log 2>&1 || true
+  ${CMSBOT_PYTHON_CMD} ${CMS_BOT_DIR}/compareTriggerResultsSummary.py -i ${WORKSPACE}/upload/triggerResults -f "*/*.json" -o ${WORKSPACE}/upload/triggerResults/index.html -F html > ${WORKSPACE}/upload/triggerResults.log 2>&1 || true
   echo "[`date`] Summary of TriggerResults comparisons saved in ${WORKSPACE}/upload/triggerResults.log"
   echo "HLT_TRIGGER_COMPARISON${TEST_FLAVOR_STR};OK,HLT Trigger ${UC_TEST_FLAVOR} comparison,See results,/SDT/jenkins-artifacts/${COMP_UPLOAD_DIR}/triggerResults/" >> ${RESULTS_FILE}
   if [ -f ${JR_COMP_DIR}/qaResultsSummary.log ]; then
